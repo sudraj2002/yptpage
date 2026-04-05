@@ -18,156 +18,509 @@
   <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <style>
-      td, th { border: 0px solid black; }
-      img { padding: 5px; }
-      .content p { font-size: 16px; }
-      .proposed-approach p { font-size: 16px; }
-      .proposed-approach h5 { font-size: 20px; }
-      h2.title { font-size: 24px; }
-      .wide-image { border: 0; height: 500px; width: 100%; }
+    :root {
+      --bg: #ffffff;
+      --bg-soft: #f6f8fb;
+      --text: #172033;
+      --muted: #5f6b85;
+      --line: #e7ebf3;
+      --accent: #2b6ef2;
+      --accent-soft: #eaf1ff;
+      --card: #ffffff;
+      --shadow: 0 10px 30px rgba(16, 24, 40, 0.08);
+      --radius: 18px;
+    }
 
-      .qual-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 24px;
-        margin-top: 20px;
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Noto Sans", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.7;
+    }
+
+    h1, h2, h3, h4, .publication-title, .section-title, .qual-title {
+      font-family: "Google Sans", "Noto Sans", sans-serif;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    /* .hero {
+      padding-top: 2.5rem;
+      padding-bottom: 1.5rem;
+      background: linear-gradient(to bottom, #f8fbff 0%, #ffffff 100%);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .publication-title {
+      font-size: clamp(2rem, 4vw, 3.35rem);
+      line-height: 1.1;
+      max-width: 980px;
+      margin: 0 auto 1rem auto;
+    }
+
+    .hero-tagline {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 760px;
+      margin: 0.75rem auto 1.5rem auto;
+    }
+
+    .publication-authors,
+    .publication-authors .author-block,
+    .is-size-4.publication-authors {
+      color: var(--muted);
+    }
+
+    .publication-links .button {
+      border-radius: 999px;
+      padding-left: 1.1rem;
+      padding-right: 1.1rem;
+      box-shadow: var(--shadow);
+    } */
+
+    .section {
+      padding-top: 3.5rem;
+      padding-bottom: 3.5rem;
+    }
+
+    .section-alt {
+      background: var(--bg-soft);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-head {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .section-kicker {
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .section-title {
+      font-size: clamp(1.7rem, 2.4vw, 2.5rem);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-subtitle {
+      max-width: 760px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .content p {
+      font-size: 1.02rem;
+      color: var(--text);
+    }
+
+    .content.has-text-justified p {
+      max-width: 920px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .figure-wide {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+    }
+
+    .qual-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      margin-top: 24px;
+    }
+
+    @media screen and (min-width: 900px) {
+      .qual-grid.two-col {
+        grid-template-columns: 1fr 1fr;
       }
+    }
 
-      @media screen and (min-width: 900px) {
-        .qual-grid.two-col {
-          grid-template-columns: 1fr 1fr;
-        }
+    .qual-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 14px 14px 16px 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .qual-title {
+      text-align: center;
+      font-size: 1.02rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .compare {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: 16px;
+      background: #0f1115;
+    }
+
+    .compare.compare-video {
+      aspect-ratio: 1 / 1;
+    }
+
+    .compare-base,
+    .compare-overlay {
+      position: absolute;
+      inset: 0;
+    }
+
+    .compare-base { z-index: 1; }
+
+    .compare-overlay {
+      z-index: 2;
+      overflow: hidden;
+      clip-path: inset(0 50% 0 0);
+    }
+
+    .compare-base img,
+    .compare-base video,
+    .compare-overlay img,
+    .compare-overlay video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      object-position: center center;
+      background: #0f1115;
+      padding: 0;
+      max-width: none;
+      max-height: none;
+      transform: none;
+    }
+
+    .compare-divider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      background: rgba(255,255,255,0.9);
+      transform: translateX(-50%);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .compare-divider::before {
+      content: "↔";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.98);
+      color: #111;
+      font-size: 18px;
+      line-height: 38px;
+      text-align: center;
+      transform: translate(-50%, -50%);
+      font-weight: 700;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    }
+
+    .compare-label {
+      position: absolute;
+      top: 12px;
+      z-index: 4;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: white;
+      background: rgba(15,17,21,0.62);
+      pointer-events: none;
+    }
+
+    .compare-label-left { left: 12px; }
+    .compare-label-right { right: 12px; }
+
+    .compare-range {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: ew-resize;
+      z-index: 5;
+      margin: 0;
+    }
+
+    .result-note {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-top: 0.6rem;
+    }
+
+    pre code {
+      border-radius: 16px;
+    }
+
+    .acknowledge {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    
+    html {
+      font-size: 17px;
+    }
+
+    body {
+      font-family: "Noto Sans", sans-serif;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: #172033;
+    }
+
+    /* .publication-title {
+      font-size: clamp(2.4rem, 4vw, 3.6rem);
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .publication-authors,
+    .publication-authors .author-block,
+    .publication-authors a {
+      font-size: 1.02rem;
+    } */
+
+    .section {
+      padding-top: 4rem;
+      padding-bottom: 4rem;
+    }
+
+    h2.title,
+    h2.title.is-3,
+    .section-title {
+      font-size: clamp(1.9rem, 2.6vw, 2.7rem);
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+
+    .content p,
+    .abstract-text,
+    .section-subtitle,
+    .result-note,
+    .qual-caption {
+      font-size: 1.05rem;
+      line-height: 1.8;
+    }
+
+    .content.has-text-justified p {
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .qual-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+    }
+
+    .compare-label {
+      font-size: 13px;
+      padding: 6px 12px;
+    }
+
+    .publication-links .button {
+      font-size: 0.98rem;
+      padding: 0.85rem 1.2rem;
+      height: auto;
+    }
+
+    /* .hero {
+      padding-top: 3rem;
+      padding-bottom: 0.5rem;
+    }
+
+    .hero-tagline {
+      max-width: 900px;
+      margin: 1.4rem auto 0 auto;
+      font-size: 1.2rem;
+      line-height: 1.7;
+      color: #5f6b85;
+    }
+
+    .publication-title {
+      font-size: clamp(2.4rem, 3.6vw, 4.2rem);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+
+    @media screen and (min-width: 1200px) {
+      .publication-title {
+        white-space: nowrap;
       }
+    }
 
-      .qual-card {
-        background: #fff;
-        border-radius: 14px;
-      }
+    .publication-authors,
+    .publication-authors .author-block,
+    .publication-authors a {
+      font-size: 1.35rem;
+      line-height: 1.5;
+    }
 
-      .qual-title {
-        text-align: center;
-        font-size: 17px;
-        font-weight: 600;
-        margin-bottom: 8px;
-      }
+    .publication-authors {
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
 
-      .compare {
-        position: relative;
-        width: 100%;
-        aspect-ratio: 1 / 1;
-        overflow: hidden;
-        border-radius: 12px;
-        background: #111;
-      }
+    .publication-authors + div,
+    .publication-affiliation,
+    .publication-venue,
+    .hero .is-size-5 {
+      font-size: 1.2rem;
+      line-height: 1.5;
+      color: #5f6b85;
+    } */
 
-      .compare.compare-image {
-        aspect-ratio: 1 / 1;
-      }
+    .abstract-block p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+    }
 
-      .compare-base,
-      .compare-overlay {
-        position: absolute;
-        inset: 0;
-      }
+    .abstract-block .content.has-text-justified p {
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
-      .compare-overlay {
-          position: absolute;
-          inset: 0;
-          overflow: hidden;
-          z-index: 2;
-          clip-path: inset(0 50% 0 0);
-        }
+    .section-postqual {
+      padding-top: 3.25rem;
+      padding-bottom: 3.25rem;
+    }
 
-      .compare-base {
-        z-index: 1;
-      }
+    .text-block {
+      max-width: 920px;
+      margin: 0 auto;
+    }
 
-      .compare-base img,
-      .compare-base video,
-      .compare-overlay img,
-      .compare-overlay video {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        display: block;
-        object-fit: contain;
-        object-position: center center;
-        background: #111;
-        padding: 0;
-        max-width: none;
-        max-height: none;
-        transform: none;
-      }
+    .figure-block {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
 
-      .compare-divider {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 50%;
-        width: 2px;
-        background: white;
-        transform: translateX(-50%);
-        box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
-        z-index: 3;
-        pointer-events: none;
-      }
+    .paper-figure {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 0 auto;
+    }
 
-      .compare-divider::before {
-        content: "↔";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 34px;
-        height: 34px;
-        border-radius: 999px;
-        background: rgba(255,255,255,0.95);
-        color: #111;
-        font-size: 18px;
-        line-height: 34px;
-        text-align: center;
-        transform: translate(-50%, -50%);
-        font-weight: 700;
-      }
+    .figure-caption {
+      max-width: none;
+      width: 100%;
+      margin: 0.9rem 0 0 0;
+      font-size: 1.02rem;
+      line-height: 1.8;
+      color: var(--text);
+      text-align: left;
+    }
 
-      .compare-label {
-        position: absolute;
-        top: 12px;
-        z-index: 4;
-        padding: 5px 10px;
-        border-radius: 999px;
-        font-size: 12px;
-        font-weight: 700;
-        color: white;
-        background: rgba(0,0,0,0.55);
-        pointer-events: none;
-      }
+    .bibtex-block {
+      max-width: 850px;
+      margin: 0 auto;
+    }
 
-      .compare-label-left {
-        left: 12px;
-      }
+    .bibtex-block pre {
+      border-radius: 16px;
+      padding: 1rem 1.15rem;
+      overflow-x: auto;
+    }
 
-      .compare-label-right {
-        right: 12px;
-      }
+    /* ===== Hero only ===== */
 
-      .compare-range {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        cursor: ew-resize;
-        z-index: 5;
-        margin: 0;
-      }
+    .hero {
+      padding-top: 3.25rem;
+      padding-bottom: 0.0rem;   /* reduced bottom padding */
+      background: linear-gradient(to bottom, #f8fbff 0%, #ffffff 100%);
+      border-bottom: 1px solid var(--line);
+    }
 
-      .qual-caption {
-        text-align: center;
-        font-size: 14px;
-        margin-top: 8px;
-        color: #444;
-      }
+    .publication-title {
+      font-size: clamp(2.8rem, 4.6vw, 4.25rem);
+      line-height: 1.06;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      max-width: 1500px;
+      margin: 0 auto 1.25rem auto;
+    }
+
+    .publication-authors,
+    .publication-authors .author-block,
+    .publication-authors a {
+      font-size: 1.32rem;   /* increased more than affiliation */
+      line-height: 1.5;
+      color: var(--accent);
+    }
+
+    .publication-authors {
+      margin-bottom: 0.2rem;
+    }
+
+    .publication-affiliation {
+      font-size: 1.08rem;   /* smaller than authors */
+      line-height: 1.45;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .publication-links {
+      margin-bottom: 0.55rem;   /* less space below buttons */
+    }
+
+    .publication-links .button {
+      font-size: 1rem;
+      padding: 0.9rem 1.25rem;
+      height: auto;
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-tagline {
+      max-width: 980px;
+      margin: 1.0rem auto 0 auto;   /* reduced space above/below tagline */
+      font-size: 1.2rem;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+
+    .first-results-section {
+      padding-top: 0.75rem;
+    }
+
   </style>
 
 </head>
@@ -175,24 +528,24 @@
 <body>
   <section class="hero">
     <div class="hero-body">
-      <div class="container is-max-desktop">
+      <div class="container is-max-widescreen">
         <div class="columns is-centered">
           <div class="column has-text-centered">
             <h1 class="title is-2 publication-title">Your Pre-trained Diffusion Model Secretly Knows Restoration</h1>
-            <div class="is-size-5 publication-authors">
+            <div class="is-size-4 publication-authors">
               <div class="authors-group">
                 <span class="author-block"><a href="https://scholar.google.com/citations?user=SGty2eUAAAAJ&hl=en" target="_blank">Sudarshan Rajagopalan</a>,</span>
                 <span class="author-block"><a href="https://scholar.google.com/citations?user=AkEXTbIAAAAJ&hl=en" target="_blank">Vishal M. Patel</a></span>
               </div>
             </div>
-            <div class="is-size-4 publication-authors">
+            <div class="is-size-5 publication-affiliation">
               <span class="author-block">Johns Hopkins University</span>
             </div>
             <div class="publication-links">
               <span class="link-block">
                 <a href="https://arxiv.org/abs" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon"><i class="ai ai-arxiv"></i></span>
-                  <span>Arxiv</span>
+                  <span>arXiv</span>
                 </a>
               </span>
               <span class="link-block">
@@ -202,45 +555,18 @@
                 </a>
               </span>
             </div>
+            <p class="hero-tagline">
+              Our approach enables pre-trained FLUX and WAN models to achieve strong restoration performance by learning only conditioning prompts.
+            </p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Abstract</h2>
-          <div class="content has-text-justified">
-            <p>Pre-trained diffusion models have enabled significant advancements in All-in-One Restoration (AiOR),
-                offering improved perceptual quality and generalization. However, diffusion-based restoration methods
-                primarily rely on fine-tuning or Control-Net style modules to leverage the pre-trained diffusion model's
-                priors for AiOR. In this work, we show that these pre-trained diffusion models inherently possess
-                restoration behavior, which can be unlocked by directly learning prompt embeddings at the output of the
-                text encoder. Interestingly, this behavior is largely inaccessible through text prompts and text-token
-                embedding optimization. Furthermore, we observe that naive prompt learning is unstable because the
-                forward noising process using degraded images is misaligned with  the reverse sampling trajectory. To
-                resolve this, we train prompts within a diffusion bridge formulation that aligns training and inference
-                dynamics, enforcing a coherent denoising path from noisy degraded states to clean images. Building on
-                these insights, we introduce our lightweight learned prompts on the pre-trained WAN video model and FLUX
-                image models, converting them into high-performing restoration models. Extensive experiments demonstrate
-                that our approach achieves competitive performance and generalization across diverse degradations, while
-                avoiding fine-tuning and restoration-specific control modules.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section class="section">
-      <div class="container is-max-desktop">
-        <h2 class="title is-3 has-text-centered">Qualitative Results</h2>
-        <div class="content has-text-centered">
-          <p>Our approach enables the pre-trained FLUX and WAN models to achieve remarkable restoration performance
-          by simply learning conditioning prompts.</p>
-        </div>
+  <section class="section first-results-section">
+      <div class="container is-max-widescreen">
 
         <h3 class="title is-4 has-text-centered" style="margin-top: 30px;">Image Restoration (FLUX + Ours)</h3>
 
@@ -395,92 +721,132 @@
       </div>
   </section>
 
-  <section class="section">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Motivation</h2>
-      <div class="content has-text-justified proposed-approach">
-        <img src="./static/images/motivation.png" alt="" border=0 height=500 width=1500>
-        <p>
-            Token-space prompting is ineffective for restoration:
+  
+  <section class="section section-postqual">
+    <div class="container is-max-widescreen">
+      <div class="text-block">
+        <h2 class="title is-3 has-text-centered">Abstract</h2>
+        <div class="content has-text-justified">
+            <p>
+              Pre-trained diffusion models have enabled significant advancements in All-in-One Restoration (AiOR),
+              offering improved perceptual quality and generalization. However, diffusion-based restoration methods
+              primarily rely on fine-tuning or Control-Net style modules to leverage the pre-trained diffusion model's
+              priors for AiOR. In this work, we show that these pre-trained diffusion models inherently possess
+              restoration behavior, which can be unlocked by directly learning prompt embeddings at the output of the
+              text encoder. Interestingly, this behavior is largely inaccessible through text prompts and text-token
+              embedding optimization. Furthermore, we observe that naive prompt learning is unstable because the
+              forward noising process using degraded images is misaligned with  the reverse sampling trajectory. To
+              resolve this, we train prompts within a diffusion bridge formulation that aligns training and inference
+              dynamics, enforcing a coherent denoising path from noisy degraded states to clean images. Building on
+              these insights, we introduce our lightweight learned prompts on the pre-trained WAN video model and FLUX
+              image models, converting them into high-performing restoration models. Extensive experiments demonstrate
+              that our approach achieves competitive performance and generalization across diverse degradations, while
+              avoiding fine-tuning and restoration-specific control modules.
+            </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-postqual">
+    <div class="container is-max-widescreen">
+      <div class="figure-block">
+        <h2 class="title is-3 has-text-centered">Motivation</h2>
+        <div class="content">
+          <img class="paper-figure" src="./static/images/motivation.png" alt="Motivation figure">
+          <p class="figure-caption">
             Even with optimized token prompts (textual inversion/prompt tuning), the model tends to denoise without
             removing degradations, whereas embedding-space optimization enables restoration from the same noisy
             degraded input.
-        </p>
+          </p>
+        </div>
       </div>
     </div>
   </section>
 
 
-  <section class="section">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Proposed Approach</h2>
-      <div class="content has-text-justified proposed-approach">
-        <img src="./static/images/block.png" alt="" border=0 height=500 width=1500>
-        <p>
-            (a) We freeze the diffusion backbone and optimize only the conditioning: token-space prompt optimization
-            fails, while embedding-space (text-encoder output) optimization elicits restoration. (b) Naive tuning
-            yields states anchored at the degraded latent; DDBM (regular diffusion bridge) is pinned at both endpoints; our
-            desired bridge starts from noisy degraded inputs and denoises monotonically as the content transitions
-            toward the clean latent. (c) Naive training sees a different state family than inference, causing
-            trajectory misalignment. (d) Bridge-based training aligns train/test states; DDBM may under-correct
-            early (low noise near degraded end), while the desired bridge enables stronger correction on an aligned path.
-        </p>
+  <section class="section section-postqual">
+    <div class="container is-max-widescreen">
+      <div class="figure-block">
+        <h2 class="title is-3 has-text-centered">Proposed Approach</h2>
+        <div class="content">
+          <img class="paper-figure" src="./static/images/block.png" alt="Block figure">
+          <p>
+              (a) We freeze the diffusion backbone and optimize only the conditioning: token-space prompts fail, 
+              while embedding-space optimization elicits restoration.
+              (b) Naive tuning yields states anchored at the degraded latent, while DDBM is pinned at both endpoints; 
+              our desired bridge starts from noisy degraded inputs and denoises toward the clean latent.
+              (c) Naive training and inference see different state families, causing trajectory misalignment.
+              (d) Bridge-based training aligns train/test states; DDBM may under-correct early, 
+              while the desired bridge enables stronger correction along an aligned path.
+          </p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Quantitative Comparisons</h2>
-      <div class="content has-text-justified">
-        <p>
+  <section class="section section-postqual">
+    <div class="container is-max-widescreen">
+      <div class="figure-block">
+        <h2 class="title is-3 has-text-centered">Quantitative Comparisons</h2>
+        <div class="content">
+          <p>
             Quantitative comparisons of our prompt learning approach on the FLUX model with state-of-the-art AiOR
-            approaches for images from OOD, mixed and unseen degradations. H-Haze, R-Rain, S-Snow, B-Blur, L-Low-light,
-            and U-Unseen.
-        </p>
-        <img src="./static/images/table1.png" alt="" border="0" height="500" width="1500">
+            approaches for images from OOD, mixed and unseen degradations. 
+          </p>
+          <img class="paper-figure" src="./static/images/tab1.png" alt="Table 1">
 
-        <p>Quantitative comparisons of our prompt learning approach on the WAN model with state-of-the-art image and
-            video restoration approaches for the task of all-in-one video restoration on OOD datasets. H-Haze, R-Rain,
-            S-Snow, B-Blur, and L-Low-light.
-        </p>
-        <img src="./static/images/table2.png" alt="" border="0" height="500" width="1500">
+          <div style="height: 2rem;"></div>
+
+          <p>
+            Quantitative comparisons of our prompt learning approach on the WAN model with state-of-the-art image and
+            video restoration approaches for the task of all-in-one video restoration on OOD datasets. 
+          </p>
+          <img class="paper-figure" src="./static/images/tab2.png" alt="Table 2">
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Qualitative Results</h2>
-      <div class="content has-text-justified">
-        <img src="./static/images/qual1.png" alt="" border="0" height="500" width="1500">
-        <p>Qualitative comparisons of the pre-trained FLUX model using our learned prompts with state-of-the-art AiOR approaches.
-            Our approach enables the pre-trained FLUX to achieve remarkable restoration performance. </p>
-        <img src="./static/images/qual2.png" alt="" border="0" height="500" width="1500">
-        <p>Qualitative comparisons of the pre-trained WAN model using our learned prompts with state-of-the-art AiOR approaches.
+  <section class="section section-postqual">
+    <div class="container is-max-widescreen">
+      <div class="figure-block">
+        <h2 class="title is-3 has-text-centered">Qualitative Results</h2>
+        <div class="content">
+          <img class="paper-figure" src="./static/images/qual1.png" alt="Qual 1">
+          <p>
+            Qualitative comparisons of the pre-trained FLUX model using our learned prompts with state-of-the-art AiOR approaches.
+            Our approach enables the pre-trained FLUX to achieve remarkable restoration performance. 
+          </p>
+          <div style="height: 2rem;"></div>
+          <img class="paper-figure" src="./static/images/qual2.png" alt="Qual 2">
+          <p>
+            Qualitative comparisons of the pre-trained WAN model using our learned prompts with state-of-the-art AiOR approaches.
             Our prompts elicit the strong restoration potential of the pre-trained WAN model.
-        </p>
+          </p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="BibTeX">
-    <div class="container content is-max-desktop">
-      <h2 class="title">BibTeX</h2>
-      <pre>
-          <code>@misc{rajagopalan2025restorevarvisualautoregressivegeneration,
-              title={RestoreVAR: Visual Autoregressive Generation for All-in-One Image Restoration},
-              author={Sudarshan Rajagopalan and Kartik Narayan and Vishal M. Patel},
-              year={2025},
-              eprint={2505.18047},
-              archivePrefix={arXiv},
-              primaryClass={cs.CV},
-              url={https://arxiv.org/abs/2505.18047},
-            }
-          </code>
-      </pre>
+  <section class="section section-postqual" id="BibTeX">
+    <div class="container is-max-widescreen">
+      <div class="bibtex-block content">
+        <h2 class="title is-3 has-text-centered">BibTeX</h2>
+        <pre><code>
+          @misc{rajagopalan2025restorevarvisualautoregressivegeneration,
+            title={RestoreVAR: Visual Autoregressive Generation for All-in-One Image Restoration},
+            author={Sudarshan Rajagopalan and Kartik Narayan and Vishal M. Patel},
+            year={2025},
+            eprint={2505.18047},
+            archivePrefix={arXiv},
+            primaryClass={cs.CV},
+            url={https://arxiv.org/abs/2505.18047}
+          }
+        </code></pre>
+      </div>
     </div>
-  </section>
+  </section>>
 
   <section class="section">
     <div class="container is-max-desktop content">
