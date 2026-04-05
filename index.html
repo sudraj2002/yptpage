@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RestoreVAR</title>
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="shortcut icon" href="./static/images/jhu_web.png" />
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+  <link rel="stylesheet" href="https://unpkg.com/image-compare-viewer/dist/image-compare-viewer.min.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <style>
+      td, th { border: 0px solid black; }
+      img { padding: 5px; }
+      .content p { font-size: 16px; }
+      .proposed-approach p { font-size: 16px; }
+      .proposed-approach h5 { font-size: 20px; }
+      h2.title { font-size: 24px; }
+      .wide-image { border: 0; height: 500px; width: 100%; }
+
+      .qual-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 24px;
+        margin-top: 20px;
+      }
+
+      @media screen and (min-width: 900px) {
+        .qual-grid.two-col {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .qual-card {
+        background: #fff;
+        border-radius: 14px;
+      }
+
+      .qual-title {
+        text-align: center;
+        font-size: 17px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .compare {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #111;
+      }
+
+      .compare.compare-image {
+        aspect-ratio: 1 / 1;
+      }
+
+      .compare-base,
+      .compare-overlay {
+        position: absolute;
+        inset: 0;
+      }
+
+      .compare-overlay {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          z-index: 2;
+          clip-path: inset(0 50% 0 0);
+        }
+
+      .compare-base {
+        z-index: 1;
+      }
+
+      .compare-base img,
+      .compare-base video,
+      .compare-overlay img,
+      .compare-overlay video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: contain;
+        object-position: center center;
+        background: #111;
+        padding: 0;
+        max-width: none;
+        max-height: none;
+        transform: none;
+      }
+
+      .compare-divider {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 2px;
+        background: white;
+        transform: translateX(-50%);
+        box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
+        z-index: 3;
+        pointer-events: none;
+      }
+
+      .compare-divider::before {
+        content: "↔";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 34px;
+        height: 34px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.95);
+        color: #111;
+        font-size: 18px;
+        line-height: 34px;
+        text-align: center;
+        transform: translate(-50%, -50%);
+        font-weight: 700;
+      }
+
+      .compare-label {
+        position: absolute;
+        top: 12px;
+        z-index: 4;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        color: white;
+        background: rgba(0,0,0,0.55);
+        pointer-events: none;
+      }
+
+      .compare-label-left {
+        left: 12px;
+      }
+
+      .compare-label-right {
+        right: 12px;
+      }
+
+      .compare-range {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: ew-resize;
+        z-index: 5;
+        margin: 0;
+      }
+
+      .qual-caption {
+        text-align: center;
+        font-size: 14px;
+        margin-top: 8px;
+        color: #444;
+      }
+  </style>
+
+</head>
+
+<body>
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-2 publication-title">Your Pre-trained Diffusion Model Secretly Knows Restoration</h1>
+            <div class="is-size-5 publication-authors">
+              <div class="authors-group">
+                <span class="author-block"><a href="https://scholar.google.com/citations?user=SGty2eUAAAAJ&hl=en" target="_blank">Sudarshan Rajagopalan</a>,</span>
+                <span class="author-block"><a href="https://scholar.google.com/citations?user=AkEXTbIAAAAJ&hl=en" target="_blank">Vishal M. Patel</a></span>
+              </div>
+            </div>
+            <div class="is-size-4 publication-authors">
+              <span class="author-block">Johns Hopkins University</span>
+            </div>
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="https://arxiv.org/abs" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="ai ai-arxiv"></i></span>
+                  <span>Arxiv</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://github.com/sudraj2002/YPT" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>Pre-trained diffusion models have enabled significant advancements in All-in-One Restoration (AiOR),
+                offering improved perceptual quality and generalization. However, diffusion-based restoration methods
+                primarily rely on fine-tuning or Control-Net style modules to leverage the pre-trained diffusion model's
+                priors for AiOR. In this work, we show that these pre-trained diffusion models inherently possess
+                restoration behavior, which can be unlocked by directly learning prompt embeddings at the output of the
+                text encoder. Interestingly, this behavior is largely inaccessible through text prompts and text-token
+                embedding optimization. Furthermore, we observe that naive prompt learning is unstable because the
+                forward noising process using degraded images is misaligned with  the reverse sampling trajectory. To
+                resolve this, we train prompts within a diffusion bridge formulation that aligns training and inference
+                dynamics, enforcing a coherent denoising path from noisy degraded states to clean images. Building on
+                these insights, we introduce our lightweight learned prompts on the pre-trained WAN video model and FLUX
+                image models, converting them into high-performing restoration models. Extensive experiments demonstrate
+                that our approach achieves competitive performance and generalization across diverse degradations, while
+                avoiding fine-tuning and restoration-specific control modules.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 has-text-centered">Qualitative Results</h2>
+        <div class="content has-text-centered">
+          <p>Our approach enables the pre-trained FLUX and WAN models to achieve remarkable restoration performance
+          by simply learning conditioning prompts.</p>
+        </div>
+
+        <h3 class="title is-4 has-text-centered" style="margin-top: 30px;">Image Restoration (FLUX + Ours)</h3>
+
+        <div class="qual-grid two-col">
+          <div class="qual-card">
+            <div class="qual-title">Mixed (Snow and Haze)</div>
+            <div class="compare compare-image" data-start="50">
+              <div class="compare-base">
+                <img src="./static/assets/flux/cdd_res.png" alt="CDD restored">
+              </div>
+              <div class="compare-overlay">
+                <img src="./static/assets/flux/cdd_in.png" alt="CDD input">
+              </div>
+              <div class="compare-label compare-label-left">Input</div>
+              <div class="compare-label compare-label-right">Restored</div>
+              <div class="compare-divider"></div>
+              <input class="compare-range" type="range" min="0" max="100" value="50">
+            </div>
+          </div>
+
+          <div class="qual-card">
+            <div class="qual-title">Real Rain</div>
+            <div class="compare compare-image" data-start="50">
+              <div class="compare-base">
+                <img src="./static/assets/flux/lhp_res.png" alt="LHP restored">
+              </div>
+              <div class="compare-overlay">
+                <img src="./static/assets/flux/lhp_in.png" alt="LHP input">
+              </div>
+              <div class="compare-label compare-label-left">Input</div>
+              <div class="compare-label compare-label-right">Restored</div>
+              <div class="compare-divider"></div>
+              <input class="compare-range" type="range" min="0" max="100" value="50">
+            </div>
+          </div>
+
+          <div class="qual-card">
+            <div class="qual-title">Unseen (under-display camera)</div>
+            <div class="compare compare-image" data-start="50">
+              <div class="compare-base">
+                <img src="./static/assets/flux/toled_res.png" alt="TOLED restored">
+              </div>
+              <div class="compare-overlay">
+                <img src="./static/assets/flux/toled_in.png" alt="TOLED input">
+              </div>
+              <div class="compare-label compare-label-left">Input</div>
+              <div class="compare-label compare-label-right">Restored</div>
+              <div class="compare-divider"></div>
+              <input class="compare-range" type="range" min="0" max="100" value="50">
+            </div>
+          </div>
+
+          <div class="qual-card">
+            <div class="qual-title">Real Blur</div>
+            <div class="compare compare-image" data-start="50">
+              <div class="compare-base">
+                <img src="./static/assets/flux/4krd_res.png" alt="4KRD restored">
+              </div>
+              <div class="compare-overlay">
+                <img src="./static/assets/flux/4krd_in.png" alt="4KRD input">
+              </div>
+              <div class="compare-label compare-label-left">Input</div>
+              <div class="compare-label compare-label-right">Restored</div>
+              <div class="compare-divider"></div>
+              <input class="compare-range" type="range" min="0" max="100" value="50">
+            </div>
+          </div>
+        </div>
+
+        <h3 class="title is-4 has-text-centered" style="margin-top: 42px;">Video Restoration (WAN + ours)</h3>
+        <div class="qual-grid two-col">
+          <div class="qual-card">
+            <div class="qual-title">Real Snow</div>
+            <div class="compare compare-video" data-start="50">
+              <div class="compare-base">
+                <video class="base-video" autoplay muted loop playsinline preload="auto">
+                  <source src="./static/assets/wan/aau_res.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="compare-overlay">
+                <video class="overlay-video" autoplay muted loop playsinline preload="auto">
+                  <source src="./static/assets/wan/aau_in.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="compare-label compare-label-left">Input</div>
+              <div class="compare-label compare-label-right">Restored</div>
+              <div class="compare-divider"></div>
+              <input class="compare-range" type="range" min="0" max="100" value="50">
+            </div>
+          </div>
+
+          <div class="qual-card">
+            <div class="qual-title">Real Low-light</div>
+            <div class="compare compare-video" data-start="50">
+              <div class="compare-base">
+                <video class="base-video" autoplay muted loop playsinline preload="auto">
+                  <source src="./static/assets/wan/loli_res.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="compare-overlay">
+                <video class="overlay-video" autoplay muted loop playsinline preload="auto">
+                  <source src="./static/assets/wan/loli_in.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="compare-label compare-label-left">Input</div>
+              <div class="compare-label compare-label-right">Restored</div>
+              <div class="compare-divider"></div>
+              <input class="compare-range" type="range" min="0" max="100" value="50">
+            </div>
+          </div>
+
+          <div class="qual-card">
+            <div class="qual-title">Real Rain</div>
+            <div class="compare compare-video" data-start="50">
+              <div class="compare-base">
+                <video class="base-video" autoplay muted loop playsinline preload="auto">
+                  <source src="./static/assets/wan/ntu_res.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="compare-overlay">
+                <video class="overlay-video" autoplay muted loop playsinline preload="auto">
+                  <source src="./static/assets/wan/ntu_in.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="compare-label compare-label-left">Input</div>
+              <div class="compare-label compare-label-right">Restored</div>
+              <div class="compare-divider"></div>
+              <input class="compare-range" type="range" min="0" max="100" value="50">
+            </div>
+          </div>
+
+          <div class="qual-card">
+            <div class="qual-title">Real Haze</div>
+            <div class="compare compare-video" data-start="50">
+              <div class="compare-base">
+                <video class="base-video" autoplay muted loop playsinline preload="auto">
+                  <source src="./static/assets/wan/rhvd_res.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="compare-overlay">
+                <video class="overlay-video" autoplay muted loop playsinline preload="auto">
+                  <source src="./static/assets/wan/rhvd_in.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="compare-label compare-label-left">Input</div>
+              <div class="compare-label compare-label-right">Restored</div>
+              <div class="compare-divider"></div>
+              <input class="compare-range" type="range" min="0" max="100" value="50">
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Motivation</h2>
+      <div class="content has-text-justified proposed-approach">
+        <img src="./static/images/motivation.png" alt="" border=0 height=500 width=1500>
+        <p>
+            Token-space prompting is ineffective for restoration:
+            Even with optimized token prompts (textual inversion/prompt tuning), the model tends to denoise without
+            removing degradations, whereas embedding-space optimization enables restoration from the same noisy
+            degraded input.
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Proposed Approach</h2>
+      <div class="content has-text-justified proposed-approach">
+        <img src="./static/images/block.png" alt="" border=0 height=500 width=1500>
+        <p>
+            (a) We freeze the diffusion backbone and optimize only the conditioning: token-space prompt optimization
+            fails, while embedding-space (text-encoder output) optimization elicits restoration. (b) Naive tuning
+            yields states anchored at the degraded latent; DDBM (regular diffusion bridge) is pinned at both endpoints; our
+            desired bridge starts from noisy degraded inputs and denoises monotonically as the content transitions
+            toward the clean latent. (c) Naive training sees a different state family than inference, causing
+            trajectory misalignment. (d) Bridge-based training aligns train/test states; DDBM may under-correct
+            early (low noise near degraded end), while the desired bridge enables stronger correction on an aligned path.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Quantitative Comparisons</h2>
+      <div class="content has-text-justified">
+        <p>
+            Quantitative comparisons of our prompt learning approach on the FLUX model with state-of-the-art AiOR
+            approaches for images from OOD, mixed and unseen degradations. H-Haze, R-Rain, S-Snow, B-Blur, L-Low-light,
+            and U-Unseen.
+        </p>
+        <img src="./static/images/table1.png" alt="" border="0" height="500" width="1500">
+
+        <p>Quantitative comparisons of our prompt learning approach on the WAN model with state-of-the-art image and
+            video restoration approaches for the task of all-in-one video restoration on OOD datasets. H-Haze, R-Rain,
+            S-Snow, B-Blur, and L-Low-light.
+        </p>
+        <img src="./static/images/table2.png" alt="" border="0" height="500" width="1500">
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Qualitative Results</h2>
+      <div class="content has-text-justified">
+        <img src="./static/images/qual1.png" alt="" border="0" height="500" width="1500">
+        <p>Qualitative comparisons of the pre-trained FLUX model using our learned prompts with state-of-the-art AiOR approaches.
+            Our approach enables the pre-trained FLUX to achieve remarkable restoration performance. </p>
+        <img src="./static/images/qual2.png" alt="" border="0" height="500" width="1500">
+        <p>Qualitative comparisons of the pre-trained WAN model using our learned prompts with state-of-the-art AiOR approaches.
+            Our prompts elicit the strong restoration potential of the pre-trained WAN model.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="BibTeX">
+    <div class="container content is-max-desktop">
+      <h2 class="title">BibTeX</h2>
+      <pre>
+          <code>@misc{rajagopalan2025restorevarvisualautoregressivegeneration,
+              title={RestoreVAR: Visual Autoregressive Generation for All-in-One Image Restoration},
+              author={Sudarshan Rajagopalan and Kartik Narayan and Vishal M. Patel},
+              year={2025},
+              eprint={2505.18047},
+              archivePrefix={arXiv},
+              primaryClass={cs.CV},
+              url={https://arxiv.org/abs/2505.18047},
+            }
+          </code>
+      </pre>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop content">
+      <h5 class="title" style="font-size: 10px;">Acknowledgement: The website template is taken from <a href="https://nerfies.github.io/" target="_blank">Nerfies</a></h5>
+    </div>
+  </section>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <script>
+      function initCompare(compareEl) {
+        const range = compareEl.querySelector(".compare-range");
+        const overlay = compareEl.querySelector(".compare-overlay");
+        const divider = compareEl.querySelector(".compare-divider");
+
+        const start = compareEl.dataset.start || 50;
+        range.value = start;
+        update(start);
+
+        function update(val) {
+          overlay.style.clipPath = `inset(0 ${100 - val}% 0 0)`;
+          divider.style.left = `${val}%`;
+        }
+
+        range.addEventListener("input", (e) => {
+          update(e.target.value);
+        });
+      }
+
+      function syncVideos(compareEl) {
+          const baseVideo = compareEl.querySelector(".base-video");
+          const overlayVideo = compareEl.querySelector(".overlay-video");
+
+          if (!baseVideo || !overlayVideo) return;
+
+          const safePlay = (video) => {
+            const p = video.play();
+            if (p !== undefined) p.catch(() => {});
+          };
+
+          const syncOverlayToBase = () => {
+            if (Math.abs(baseVideo.currentTime - overlayVideo.currentTime) > 0.033) {
+              overlayVideo.currentTime = baseVideo.currentTime;
+            }
+          };
+
+          baseVideo.addEventListener("play", () => safePlay(overlayVideo));
+          baseVideo.addEventListener("pause", () => overlayVideo.pause());
+          baseVideo.addEventListener("seeking", syncOverlayToBase);
+          baseVideo.addEventListener("seeked", syncOverlayToBase);
+          baseVideo.addEventListener("timeupdate", syncOverlayToBase);
+
+          Promise.all([
+            new Promise(res => baseVideo.addEventListener("loadedmetadata", res, { once: true })),
+            new Promise(res => overlayVideo.addEventListener("loadedmetadata", res, { once: true }))
+          ]).then(() => {
+            overlayVideo.currentTime = baseVideo.currentTime;
+            safePlay(baseVideo);
+            safePlay(overlayVideo);
+          });
+      }
+
+      document.querySelectorAll(".compare").forEach((el) => {
+        initCompare(el);
+        syncVideos(el);
+      });
+  </script>
+</body>
+
+</html>
