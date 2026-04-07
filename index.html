@@ -872,7 +872,7 @@
         update(start);
 
         function update(val) {
-          overlay.style.width = `${val}%`;
+          overlay.style.clipPath = `inset(0 ${100 - val}% 0 0)`;
           divider.style.left = `${val}%`;
         }
 
