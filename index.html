@@ -192,10 +192,11 @@
 
     .compare-base { z-index: 1; }
 
+
     .compare-overlay {
       z-index: 2;
       overflow: hidden;
-      clip-path: inset(0 50% 0 0);
+      width: 50%;
     }
 
     .compare-base img,
@@ -872,7 +873,7 @@
         update(start);
 
         function update(val) {
-          overlay.style.clipPath = `inset(0 ${100 - val}% 0 0)`;
+          overlay.style.width = `${val}%`;
           divider.style.left = `${val}%`;
         }
 
